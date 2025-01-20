@@ -1,6 +1,5 @@
 node_modules/
 freelnacer-app-frontend/
-.env
 .git
 public/*
 uploads/*

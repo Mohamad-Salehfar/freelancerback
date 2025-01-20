@@ -16,7 +16,7 @@ const {
   updateProfileSchema,
   checkOtpSchema,
 } = require("../validators/user.schema");
-const Resend = require("resend");
+const { Resend } = require("resend");
 
 class userAuthController extends Controller {
   constructor() {
@@ -38,6 +38,7 @@ class userAuthController extends Controller {
     if (!result) throw createError.Unauthorized("ورود شما انجام نشد.");
 
     // send OTP
+
     this.sendOTP(phoneNumber, res);
   }
   async checkOtp(req, res) {
@@ -139,11 +140,11 @@ class userAuthController extends Controller {
 
     const resend = new Resend("re_RSYiPt16_QGjKhQdPpmZ2gCggGKJK4WLh"); // ای پی ای کی خودت رو بذار
 
-    await resend.email.send({
+    await resend.emails.send({
       from: "onboarding@resend.dev",
       to: "mmad.sd1998@gmail.com", // ایمیلی که ثبت نام کردی وارد کن
       subject: "کد اعتبار سنجی",
-      html: `<p>${phoneNumber}</p>`,
+      html: `<p>${this.code}</p>`,
     });
 
     res.status(200).json({ message: "کد اعتبار سنجی ارسال شد" });

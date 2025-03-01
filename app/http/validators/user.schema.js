@@ -2,7 +2,7 @@ const Joi = require("joi");
 const createHttpError = require("http-errors");
 
 const getOtpSchema = Joi.object({
-  phoneNumber: Joi.string()
+  email: Joi.string()
     .length(11)
     .pattern(/^09[0-9]{9}$/)
     .error(createHttpError.BadRequest("شماره موبایل وارد شده صحیح نمیباشد")),
@@ -13,7 +13,7 @@ const checkOtpSchema = Joi.object({
     .min(5)
     .max(6)
     .error(createHttpError.BadRequest("کد ارسال شده صحیح نمیباشد")),
-  phoneNumber: Joi.string()
+  email: Joi.string()
     .length(11)
     .pattern(/^09[0-9]{9}$/)
     .error(createHttpError.BadRequest("شماره موبایل وارد شده صحیح نمیباشد")),
@@ -43,7 +43,7 @@ const updateProfileSchema = Joi.object({
     .required()
     .email()
     .error(createHttpError.BadRequest("ایمیل وارد شده صحیح نمی باشد")),
-  phoneNumber: Joi.string()
+  email: Joi.string()
     .length(11)
     .pattern(/^09[0-9]{9}$/)
     .error(createHttpError.BadRequest("شماره موبایل وارد شده صحیح نمیباشد")),

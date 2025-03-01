@@ -7,14 +7,14 @@ const UserSchema = new mongoose.Schema(
     avatar: { type: String },
     biography: { type: String, default: null },
     email: { type: String, lowercase: true, trim: true },
-    phoneNumber: { type: String, trim: true },
+    email: { type: String, trim: true },
     password: { type: String },
     otp: {
       code: { type: Number, defaul: 0 },
       expiresIn: { type: Date, default: 0 },
     },
     resetLink: { type: String, default: null },
-    isVerifiedPhoneNumber: { type: Boolean, default: false },
+    isVerifiedemail: { type: Boolean, default: false },
     isActive: { type: Boolean, default: false },
     status: { type: Number, required: true, default: 1, enum: [0, 1, 2] }, // 0, 1, 2
     role: { type: String, default: "OWNER" }, // default role is OWNER
@@ -43,7 +43,7 @@ UserSchema.methods.toJSON = function () {
 UserSchema.index({
   name: "text",
   email: "text",
-  phoneNumber: "text",
+  email: "text",
   username: "text",
 });
 

@@ -22,31 +22,30 @@ class userAuthController extends Controller {
   constructor() {
     super();
     this.code = 0;
-    this.phoneNumber = null;
+    this.email = null;
   }
   async getOtp(req, res) {
-    let { phoneNumber } = req.body;
+    let { email } = req.body;
 
-    if (!phoneNumber)
-      throw createError.BadRequest("شماره موبایل معتبر را وارد کنید");
+    if (!email) throw createError.BadRequest("شماره موبایل معتبر را وارد کنید");
 
-    phoneNumber = phoneNumber.trim();
-    this.phoneNumber = phoneNumber;
+    email = email.trim();
+    this.email = email;
     this.code = generateRandomNumber(6);
 
-    const result = await this.saveUser(phoneNumber);
+    const result = await this.saveUser(email);
     if (!result) throw createError.Unauthorized("ورود شما انجام نشد.");
 
     // send OTP
 
-    this.sendOTP(phoneNumber, res);
+    this.sendOTP(email, res);
   }
   async checkOtp(req, res) {
     await checkOtpSchema.validateAsync(req.body);
-    const { otp: code, phoneNumber } = req.body;
+    const { otp: code, email } = req.body;
 
     const user = await UserModel.findOne(
-      { phoneNumber },
+      { email },
       { password: 0, refreshToken: 0, accessToken: 0 }
     );
 
@@ -76,37 +75,37 @@ class userAuthController extends Controller {
       },
     });
   }
-  async saveUser(phoneNumber) {
+  async saveUser(email) {
     const otp = {
       code: this.code,
       expiresIn: Date.now() + CODE_EXPIRES,
     };
 
-    const user = await this.checkUserExist(phoneNumber);
-    if (user) return await this.updateUser(phoneNumber, { otp });
+    const user = await this.checkUserExist(email);
+    if (user) return await this.updateUser(email, { otp });
 
     return await UserModel.create({
-      phoneNumber,
+      email,
       otp,
       // role: ROLES.USER,
     });
   }
-  async checkUserExist(phoneNumber) {
-    const user = await UserModel.findOne({ phoneNumber });
+  async checkUserExist(email) {
+    const user = await UserModel.findOne({ email });
     return user;
   }
-  async updateUser(phoneNumber, objectData = {}) {
+  async updateUser(email, objectData = {}) {
     Object.keys(objectData).forEach((key) => {
       if (["", " ", 0, null, undefined, "0", NaN].includes(objectData[key]))
         delete objectData[key];
     });
     const updatedResult = await UserModel.updateOne(
-      { phoneNumber },
+      { email },
       { $set: objectData }
     );
     return !!updatedResult.modifiedCount;
   }
-  async sendOTP(phoneNumber, res) {
+  async sendOTP(email, res) {
     // const kaveNegarApi = Kavenegar.KavenegarApi({
     //   apikey: `${process.env.KAVENEGAR_API_KEY}`,
     // });
@@ -184,12 +183,12 @@ class userAuthController extends Controller {
   async updateProfile(req, res) {
     const { _id: userId } = req.user;
     await updateProfileSchema.validateAsync(req.body);
-    const { name, email, biography, phoneNumber } = req.body;
+    const { name, email, biography } = req.body;
 
     const updateResult = await UserModel.updateOne(
       { _id: userId },
       {
-        $set: { name, email, biography, phoneNumber },
+        $set: { name, email, biography },
       }
     );
     if (!updateResult.modifiedCount === 0)

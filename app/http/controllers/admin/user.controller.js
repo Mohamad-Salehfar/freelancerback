@@ -17,11 +17,7 @@ class UserController extends Controller {
     // const databaseQuery = {};
     // if (search) databaseQuery["$text"] = { $search: search };
     const users = await UserModel.find({
-      $or: [
-        { name: searchTerm },
-        { email: searchTerm },
-        { phoneNumber: searchTerm },
-      ],
+      $or: [{ name: searchTerm }, { email: searchTerm }, { email: searchTerm }],
     })
       .limit(limit)
       .skip(skip)

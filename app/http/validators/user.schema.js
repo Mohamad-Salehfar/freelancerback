@@ -13,10 +13,10 @@ const checkOtpSchema = Joi.object({
     .min(5)
     .max(6)
     .error(createHttpError.BadRequest("کد ارسال شده صحیح نمیباشد")),
-  email: Joi.string()
-    .length(11)
-    .pattern(/^09[0-9]{9}$/)
-    .error(createHttpError.BadRequest("شماره موبایل وارد شده صحیح نمیباشد")),
+  email: Joi.string().email(),
+  // .length(11)   // اینجا باید از کتابخونه joi برای ایمیل استفاده کنم
+  // .pattern(/^09[0-9]{9}$/)
+  // .error(createHttpError.BadRequest("شماره موبایل وارد شده صحیح نمیباشد")),
 });
 
 const completeProfileSchema = Joi.object({
